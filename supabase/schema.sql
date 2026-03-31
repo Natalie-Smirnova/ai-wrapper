@@ -97,4 +97,15 @@ $$ LANGUAGE plpgsql;
 ALTER PUBLICATION supabase_realtime ADD TABLE chats;
 
 -- Create storage bucket for attachments
-INSERT INTO storage.buckets (id, name, public) VALUES ('attachments', 'attachments', false);
+INSERT INTO storage.buckets (id, name, public) VALUES ('attachments', 'attachments', false)
+ON CONFLICT (id) DO NOTHING;
+
+-- Storage policies: allow service-role full access to attachments bucket
+CREATE POLICY "Service role can upload" ON storage.objects
+  FOR INSERT TO service_role WITH CHECK (bucket_id = 'attachments');
+
+CREATE POLICY "Service role can read" ON storage.objects
+  FOR SELECT TO service_role USING (bucket_id = 'attachments');
+
+CREATE POLICY "Service role can delete" ON storage.objects
+  FOR DELETE TO service_role USING (bucket_id = 'attachments');
