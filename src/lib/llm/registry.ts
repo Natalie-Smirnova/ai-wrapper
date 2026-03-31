@@ -28,7 +28,7 @@ export function listModels(): ModelInfo[] {
   return [
     { id: "gpt-4o", name: "GPT-4o", provider: "openai" },
     { id: "gpt-4o-mini", name: "GPT-4o Mini", provider: "openai" },
-    { id: "gemini-1.5-pro", name: "Gemini 1.5 Pro", provider: "gemini" },
-    { id: "gemini-1.5-flash", name: "Gemini 1.5 Flash", provider: "gemini" },
+    { id: "gemini-2.5-pro", name: "Gemini 2.5 Pro", provider: "gemini" },
+    { id: "gemini-2.5-flash", name: "Gemini 2.5 Flash", provider: "gemini" },
   ];
 }

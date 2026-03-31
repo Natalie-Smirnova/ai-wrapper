@@ -1,6 +1,13 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { LLMProvider, LLMMessage, LLMContentPart } from "./types";
 
+const GEMINI_MODEL_ALIASES: Record<string, string> = {
+  "gemini-1.5-pro": "gemini-2.5-pro",
+  "gemini-1.5-flash": "gemini-2.5-flash",
+};
+
+const DEFAULT_TITLE_MODEL = "gemini-2.5-flash";
+
 export class GeminiProvider implements LLMProvider {
   private client: GoogleGenerativeAI;
 
@@ -12,7 +19,9 @@ export class GeminiProvider implements LLMProvider {
     model: string,
     messages: LLMMessage[]
   ): AsyncIterable<string> {
-    const genModel = this.client.getGenerativeModel({ model });
+    const genModel = this.client.getGenerativeModel({
+      model: this.normalizeModel(model),
+    });
 
     // Convert messages to Gemini format
     const history: Array<{
@@ -59,11 +68,15 @@ export class GeminiProvider implements LLMProvider {
   }
 
   async generateTitle(content: string): Promise<string> {
-    const model = this.client.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = this.client.getGenerativeModel({ model: DEFAULT_TITLE_MODEL });
     const result = await model.generateContent(
       `Generate a short title (max 6 words) for this conversation. Return only the title, no quotes.\n\n${content}`
     );
     return result.response.text().trim() || "New chat";
+  }
+
+  private normalizeModel(model: string): string {
+    return GEMINI_MODEL_ALIASES[model] ?? model;
   }
 
   private async toParts(

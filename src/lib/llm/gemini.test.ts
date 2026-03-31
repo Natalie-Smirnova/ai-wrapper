@@ -77,6 +77,24 @@ describe("GeminiProvider", () => {
     expect(imagePart.inlineData.data).toBeTruthy();
   });
 
+  it("maps legacy Gemini model ids to supported ones", async () => {
+    const messages: LLMMessage[] = [
+      {
+        role: "user",
+        content: "Hello",
+      },
+    ];
+
+    const stream = provider.streamCompletion("gemini-1.5-flash", messages);
+    for await (const _ of stream) {
+      // consume
+    }
+
+    expect(mockGetGenerativeModel).toHaveBeenCalledWith({
+      model: "gemini-2.5-flash",
+    });
+  });
+
   it("falls back to text when image fetch fails", async () => {
     mockFetchFn.mockResolvedValue({
       ok: false,
@@ -110,5 +128,13 @@ describe("GeminiProvider", () => {
     // Should have fallback text
     const texts = sentParts.filter((p: Record<string, unknown>) => p.text !== undefined);
     expect(texts.some((p: Record<string, unknown>) => String(p.text).includes("[Image unavailable"))).toBe(true);
+  });
+
+  it("uses a supported Gemini model for title generation", async () => {
+    await provider.generateTitle("A conversation about Next.js");
+
+    expect(mockGetGenerativeModel).toHaveBeenCalledWith({
+      model: "gemini-2.5-flash",
+    });
   });
 });

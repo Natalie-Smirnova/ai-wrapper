@@ -38,7 +38,9 @@ export function useUpdateChat() {
       chatId: string;
       input: UpdateChatInput;
     }) => apiUpdateChat(chatId, input),
-    onSuccess: () => {
+    onSuccess: (updatedChat, { chatId }) => {
+      queryClient.setQueryData(["chat", chatId], updatedChat);
+      queryClient.invalidateQueries({ queryKey: ["chat", chatId] });
       queryClient.invalidateQueries({ queryKey: ["chats"] });
     },
   });
