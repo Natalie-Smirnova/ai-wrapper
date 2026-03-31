@@ -1,5 +1,8 @@
 # AI Chat
 
+DEMO VIDEO: https://drive.google.com/drive/folders/1wmrnngfLYm8iMJ8CHA2WQ84ZqEzY6Y87?usp=sharing
+VERCEL: https://ai-wrapper-ten.vercel.app/chat
+
 A ChatGPT-like chatbot interface with multi-LLM support, real-time streaming, file uploads, and cross-tab synchronization.
 
 ## Features
