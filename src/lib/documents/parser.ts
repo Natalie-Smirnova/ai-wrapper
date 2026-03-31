@@ -1,6 +1,3 @@
-import { PDFParse } from "pdf-parse";
-import * as mammoth from "mammoth";
-
 const CHUNK_SIZE = 1000;
 const CHUNK_OVERLAP = 200;
 
@@ -10,11 +7,13 @@ export async function extractText(
 ): Promise<string> {
   switch (mimeType) {
     case "application/pdf": {
+      const { PDFParse } = await import("pdf-parse");
       const parser = new PDFParse({ data: new Uint8Array(buffer) });
       const result = await parser.getText();
       return result.text;
     }
     case "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
+      const mammoth = await import("mammoth");
       const extract =
         mammoth.extractRawText ??
         (mammoth as unknown as { default: typeof mammoth }).default
