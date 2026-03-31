@@ -1,3 +1,5 @@
+import type { Attachment } from "./attachment";
+
 export interface Message {
   id: string;
   chat_id: string;
@@ -8,6 +10,7 @@ export interface Message {
   tokens_in: number | null;
   tokens_out: number | null;
   created_at: string;
+  attachments?: Attachment[];
 }
 
 export interface SendMessageInput {

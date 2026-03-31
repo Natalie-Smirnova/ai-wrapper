@@ -1,5 +1,17 @@
 import { db } from "./client";
 import type { Message } from "@/types/message";
+import type { Attachment } from "@/types/attachment";
+
+type MessageRow = Omit<Message, "attachments"> & {
+  attachments?: Attachment[] | null;
+};
+
+function normalizeMessage(row: MessageRow): Message {
+  return {
+    ...row,
+    attachments: row.attachments ?? [],
+  };
+}
 
 export async function listMessages(
   chatId: string,
@@ -8,7 +20,7 @@ export async function listMessages(
 ): Promise<{ messages: Message[]; cursor: string | null }> {
   let query = db
     .from("messages")
-    .select("*")
+    .select("*, attachments(*)")
     .eq("chat_id", chatId)
     .order("created_at", { ascending: true })
     .limit(limit);
@@ -20,13 +32,24 @@ export async function listMessages(
   const { data, error } = await query;
   if (error) throw new Error(error.message);
 
-  const messages = data as Message[];
+  const messages = (data as MessageRow[]).map(normalizeMessage);
   const nextCursor =
     messages.length === limit
       ? messages[messages.length - 1].created_at
       : null;
 
   return { messages, cursor: nextCursor };
+}
+
+export async function getMessageById(id: string): Promise<Message> {
+  const { data, error } = await db
+    .from("messages")
+    .select("*, attachments(*)")
+    .eq("id", id)
+    .single();
+
+  if (error) throw new Error(error.message);
+  return normalizeMessage(data as MessageRow);
 }
 
 export async function createMessage(input: {

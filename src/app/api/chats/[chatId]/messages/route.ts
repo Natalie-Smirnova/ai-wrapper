@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { authenticate, isOwner, applySessionCookie } from "@/lib/auth/middleware";
 import { getChatById, updateChat } from "@/lib/db/chats";
-import { listMessages, createMessage, getMessageCount } from "@/lib/db/messages";
+import {
+  listMessages,
+  createMessage,
+  getMessageCount,
+  getMessageById,
+} from "@/lib/db/messages";
 import {
   linkAttachmentsToMessage,
   getImageAttachmentsByChatId,
@@ -88,7 +93,7 @@ export async function POST(
     }
 
     // Save user message
-    const userMessage = await createMessage({
+    const createdUserMessage = await createMessage({
       chat_id: chatId,
       role: "user",
       content,
@@ -96,8 +101,10 @@ export async function POST(
 
     // Link attachments
     if (attachment_ids?.length) {
-      await linkAttachmentsToMessage(attachment_ids, userMessage.id);
+      await linkAttachmentsToMessage(attachment_ids, createdUserMessage.id);
     }
+
+    const userMessage = await getMessageById(createdUserMessage.id);
 
     // Build LLM context
     const { messages: allMessages } = await listMessages(chatId, 100);

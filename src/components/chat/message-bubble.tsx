@@ -2,6 +2,7 @@
 
 import type { Message } from "@/types/message";
 import { StreamingText } from "./streaming-text";
+import { AttachmentPreview } from "./attachment-preview";
 import { cn } from "@/lib/utils";
 import { User, Bot } from "lucide-react";
 
@@ -33,6 +34,17 @@ export function MessageBubble({ message }: MessageBubbleProps) {
             : "bg-muted"
         )}
       >
+        {message.attachments && message.attachments.length > 0 && (
+          <div className="mb-3 flex flex-wrap gap-2">
+            {message.attachments.map((attachment) => (
+              <AttachmentPreview
+                key={attachment.id}
+                attachment={attachment}
+                compact
+              />
+            ))}
+          </div>
+        )}
         {isUser ? (
           <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
         ) : (
