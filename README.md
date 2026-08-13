@@ -1,9 +1,17 @@
-# AI Chat
+# AI Chat — Multi-LLM Full-Stack Application
 
-DEMO VIDEO: https://drive.google.com/drive/folders/1wmrnngfLYm8iMJ8CHA2WQ84ZqEzY6Y87?usp=sharing
-VERCEL: https://ai-wrapper-ten.vercel.app/chat
+A production-style AI chat application with provider switching, token streaming, authentication, persistent conversations, file context, and real-time cross-tab synchronization.
 
-A ChatGPT-like chatbot interface with multi-LLM support, real-time streaming, file uploads, and cross-tab synchronization.
+[Live demo](https://ai-wrapper-ten.vercel.app/chat) · [Demo video](https://drive.google.com/drive/folders/1wmrnngfLYm8iMJ8CHA2WQ84ZqEzY6Y87?usp=sharing)
+
+## Engineering highlights
+
+- Provider-neutral LLM layer for OpenAI and Google Gemini.
+- Anonymous-to-authenticated chat migration without losing conversation history.
+- Server-owned database access and authorization boundaries; UI components never query the database directly.
+- Streaming responses over SSE and Supabase Realtime updates across browser tabs.
+- Image and document ingestion with private storage, signed URLs, text extraction, and chunked context.
+- Unit, component, API-route, and Playwright end-to-end coverage.
 
 ## Features
 
